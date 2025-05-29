@@ -5,12 +5,6 @@ import "./globals.css"
 
 const inter = Inter({ subsets: ["latin"] })
 
-export const metadata: Metadata = {
-  title: "Emotion Image Editor",
-  description: "Transform portrait emotions with AI",
-    generator: 'v0.dev'
-}
-
 export default function RootLayout({
   children,
 }: {
