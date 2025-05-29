@@ -6,7 +6,7 @@ This project focuses on augmenting human creativity by allowing fine control ove
 
 ## Features
 
-- Upload portrait images (JPG or PNG)
+- Upload portrait or scenery images (JPG or PNG)
 - Adjust emotional expression using a slider ranging from -2 to +2 (realistic mode)
 - Enable "Hallucination Mode" to expand slider range to -10 to +10 for more exaggerated emotional outputs
 - Real-time visual feedback
@@ -36,7 +36,7 @@ Navigate to [http://localhost:3000](http://localhost:3000) in your browser.
 ## Usage Guide
 
 1. **Upload Image**  
-   Select a JPG or PNG portrait image using the upload interface.
+   Select a JPG or PNG image using the upload interface.
 
 2. **Adjust Emotion**  
    Use the slider to apply subtle emotion changes between -2 and +2.
