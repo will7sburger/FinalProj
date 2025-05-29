@@ -1,4 +1,4 @@
-# Emocio - The Emotion Image Editor
+# Emocio - Emotion-Perception Generator
 
 A Next.js-based application that enables users to upload portrait images and adjust facial emotional expressions using AI.
 
