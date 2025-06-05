@@ -33,8 +33,41 @@ export default function Home() {
     if (file && (file.type === "image/jpeg" || file.type === "image/png")) {
       const reader = new FileReader()
       reader.onload = (event) => {
-        setUploadedImage(event.target?.result as string)
-        setResult(null) // Clear previous results when new image is uploaded
+        const img = new Image()
+        img.onload = () => {
+          // Create canvas with 16:9 aspect ratio
+          const canvas = document.createElement('canvas')
+          const ctx = canvas.getContext('2d')
+          
+          // Set target dimensions maintaining 16:9 ratio
+          const targetWidth = 1280 // standard HD width
+          const targetHeight = 720 // standard HD height (16:9)
+          
+          canvas.width = targetWidth
+          canvas.height = targetHeight
+          
+          if (ctx) {
+            // Fill with black background
+            ctx.fillStyle = 'black'
+            ctx.fillRect(0, 0, targetWidth, targetHeight)
+            
+            // Calculate scaling and position to maintain aspect ratio
+            const scale = Math.max(targetWidth / img.width, targetHeight / img.height)
+            const scaledWidth = img.width * scale
+            const scaledHeight = img.height * scale
+            const x = (targetWidth - scaledWidth) / 2
+            const y = (targetHeight - scaledHeight) / 2
+            
+            // Draw image centered
+            ctx.drawImage(img, x, y, scaledWidth, scaledHeight)
+            
+            // Convert to base64
+            const resizedImage = canvas.toDataURL(file.type)
+            setUploadedImage(resizedImage)
+            setResult(null)
+          }
+        }
+        img.src = event.target?.result as string
       }
       reader.readAsDataURL(file)
     }
@@ -54,7 +87,15 @@ export default function Home() {
 
       // Call the Gemini processing function
       const response = await processImageWithGemini(args)
-      setResult(response)
+      console.log('Video data received on frontend');
+      
+      // The API returns a Blob
+      const videoBlob = new Blob([response], { type: 'video/mp4' });
+      console.log('Created video blob, size:', videoBlob.size);
+      
+      const videoUrl = URL.createObjectURL(videoBlob)
+      console.log('Video URL created, ready for display');
+      setResult(videoUrl)
     } catch (error) {
       console.error("Error generating perception:", error)
       setResult("Error generating perception. Please try again.")
@@ -142,8 +183,21 @@ export default function Home() {
             {/* Results Section */}
             {result && (
               <div className="mt-6 p-4 bg-white/90 rounded-xl border border-purple-200 shadow-md">
-                <h3 className="text-lg font-semibold text-purple-700 mb-2">Perception Result:</h3>
-                <p className="text-gray-700 whitespace-pre-line">{result}</p>
+                <h3 className="text-lg font-semibold text-purple-700 mb-2">Generated Video:</h3>
+                <div className="relative w-full aspect-video">
+                  <video 
+                    controls 
+                    className="w-full h-full rounded-lg shadow-lg"
+                    src={result}
+                    onLoadedData={() => {
+                      console.log('Video loaded and ready to play');
+                      console.log('finished');
+                    }}
+                    onError={(e) => console.error('Video loading error:', e)}
+                  >
+                    Your browser does not support the video tag.
+                  </video>
+                </div>
               </div>
             )}
           </div>
